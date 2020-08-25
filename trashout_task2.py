@@ -40,7 +40,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSe
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, log_loss, confusion_matrix
 # from venues_deployed import getnearbyvenues
 # from getnearbyvenues import *
-from mrcnn.infer import get_model,predict
+# from mrcnn.infer import get_model,predict
   
 from PIL import Image, ImageDraw, ImageFont
 import os
