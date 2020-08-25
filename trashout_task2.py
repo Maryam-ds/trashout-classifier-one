@@ -1,4 +1,4 @@
-"start": "node server.js",
+
 
 #!/usr/bin/env python
 # coding: utf-8
