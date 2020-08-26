@@ -62,8 +62,8 @@ def file_selector(folder_path='.'):
     return os.path.join(folder_path, selected_filename)
 
 st.write('Trashout Shopping Product Classifier!')
-INCEP_LABEL_PATH = "incep_cl/trained_labels.txt"
-INCEP_MODEL_PATH = "incep_cl/trained_graph_4000.pb"
+# INCEP_LABEL_PATH = "incep_cl/trained_labels.txt"
+# INCEP_MODEL_PATH = "incep_cl/trained_graph_4000.pb"
 
 # MASKRCNN_MODEL_WEIGHTS = "mrcnn/weights/mask_rcnn_trashout_0250.h5"
 
@@ -71,43 +71,43 @@ INCEP_MODEL_PATH = "incep_cl/trained_graph_4000.pb"
 option_model_first = st.sidebar.radio("Choose Option",options = ['Run product classifier','Regulations information'])
 
 #Loads label file, strips off carriage return
-label_lines = [line.rstrip() for line in tf.io.gfile.GFile(INCEP_LABEL_PATH)]
-#Unpersists graph from file
-with tf.compat.v1.gfile.FastGFile(INCEP_MODEL_PATH, "rb") as f:
-    graph_def = tf.compat.v1.GraphDef()
-    graph_def.ParseFromString(f.read())
-    _ = tf.import_graph_def(graph_def, name="")
+# label_lines = [line.rstrip() for line in tf.io.gfile.GFile(INCEP_LABEL_PATH)]
+# #Unpersists graph from file
+# with tf.compat.v1.gfile.FastGFile(INCEP_MODEL_PATH, "rb") as f:
+#     graph_def = tf.compat.v1.GraphDef()
+#     graph_def.ParseFromString(f.read())
+#     _ = tf.import_graph_def(graph_def, name="")
 
-if option_model_first == 'Run product classifier':  
-    load_image = uploaded_file = st.file_uploader("Load image", type=['jpg','png','jpeg'])
-    if load_image is not None:
-        image = Image.open(load_image)
-        st.image(image, caption='Uploaded Image.', width = 160) 
+# if option_model_first == 'Run product classifier':  
+#     load_image = uploaded_file = st.file_uploader("Load image", type=['jpg','png','jpeg'])
+#     if load_image is not None:
+#         image = Image.open(load_image)
+#         st.image(image, caption='Uploaded Image.', width = 160) 
         #st.set_option('deprecation.showfileUploaderEncoding', False)
 #         option_model = st.selectbox("Choose Model" , options = ['Select Model','Inception','MaskRcnn'])
-        option_model = st.selectbox("Choose Model" , options = ['Select Model','Inception'])
+#         option_model = st.selectbox("Choose Model" , options = ['Select Model','Inception'])
    
-        if (option_model == "Inception"):
-            if st.button('Get Classification'):
-                image = Image.open(load_image)
-                load_image = image.convert('RGB')
-                load_image.save('im.jpg', format="JPEG")
+#         if (option_model == "Inception"):
+#             if st.button('Get Classification'):
+#                 image = Image.open(load_image)
+#                 load_image = image.convert('RGB')
+#                 load_image.save('im.jpg', format="JPEG")
     
-                image_data = tf.compat.v1.gfile.FastGFile('im.jpg', "rb").read()
-                with tf.compat.v1.Session() as sess:             
-                    # Feed the image_data as input to the graph and get first prediction
-                    st.spinner=("Inference running on the Image by model...")
-                    softmax_tensor = sess.graph.get_tensor_by_name("final_result:0")
+#                 image_data = tf.compat.v1.gfile.FastGFile('im.jpg', "rb").read()
+#                 with tf.compat.v1.Session() as sess:             
+#                     # Feed the image_data as input to the graph and get first prediction
+#                     st.spinner=("Inference running on the Image by model...")
+#                     softmax_tensor = sess.graph.get_tensor_by_name("final_result:0")
 
-                    predictions = sess.run(softmax_tensor, {"DecodeJpeg/contents:0": image_data})
+#                     predictions = sess.run(softmax_tensor, {"DecodeJpeg/contents:0": image_data})
 
-                    # Sort to show labels of first prediction in order of confidence
-                    top_k = predictions[0].argsort()[-len(predictions[0]) :][::-1]
-                    answer = label_lines[top_k[0]]
-                    print(answer)    
-                image_label = answer
-                #image_label = 'Felxible Plastic'
-                st.image([image], image_label, width=160)  # output dyptich
+#                     # Sort to show labels of first prediction in order of confidence
+#                     top_k = predictions[0].argsort()[-len(predictions[0]) :][::-1]
+#                     answer = label_lines[top_k[0]]
+#                     print(answer)    
+#                 image_label = answer
+#                 #image_label = 'Felxible Plastic'
+#                 st.image([image], image_label, width=160)  # output dyptich
 
 #         elif (option_model == "MaskRcnn"):
 #             if st.button('Get Classification'):
