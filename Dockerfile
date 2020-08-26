@@ -122,10 +122,10 @@ RUN conda --version\
  # copy over requirements
 COPY requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
-EXPOSE 8501
+# EXPOSE 8501
 # making directory of app
 WORKDIR /app
 # copying all files over
 COPY . .
 # cmd to launch app when container is run
-CMD streamlit run trashout_task2.py --server.port $PORT
+CMD streamlit run trashout_task2.py --timeout 15 --keep-alive 5 --log-level debug --server.port $PORT 
