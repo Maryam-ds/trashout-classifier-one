@@ -17,30 +17,23 @@ import PIL
 from PIL import Image
 import requests
 #------------------------------------
-# import tensorflow as tf
-# from tensorflow import one_hot
-# from tensorflow.keras.callbacks import LambdaCallback, Callback, ModelCheckpoint, EarlyStopping, LearningRateScheduler
-# from tensorflow.keras.optimizers.schedules import ExponentialDecay
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras import Model, Sequential
-# from tensorflow.keras import backend, regularizers
-# from tensorflow.keras.layers import Activation, Reshape, Dense, Embedding, Dropout, Input, BatchNormalization, concatenate, Flatten, GlobalAveragePooling1D
-# from tensorflow.keras.preprocessing.sequence import pad_sequences
-# from tensorflow.keras.optimizers import Adam, RMSprop, SGD, Adadelta, Adagrad, Adamax
-# #from tensorflow_addons.optimizers import AdamW
-# from tensorflow.keras.losses import CategoricalCrossentropy
-# from tensorflow.keras.utils import to_categorical, plot_model
-# from shapely.geometry import Point
-# import time
-# from requests.adapters import HTTPAdapter
-# from requests.packages.urllib3.util.retry import Retry
-# import seaborn as sns
-# from sklearn.preprocessing import StandardScaler, MinMaxScaler
-# from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
-# from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, log_loss, confusion_matrix
-
-
-
+import tensorflow as tf
+from tensorflow import one_hot
+from tensorflow.keras.callbacks import LambdaCallback, Callback, ModelCheckpoint, EarlyStopping, LearningRateScheduler
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
+from tensorflow.keras.models import load_model
+from tensorflow.keras import Model, Sequential
+from tensorflow.keras import backend, regularizers
+from tensorflow.keras.layers import Activation, Reshape, Dense, Embedding, Dropout, Input, BatchNormalization, concatenate, Flatten, GlobalAveragePooling1D
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.optimizers import Adam, RMSprop, SGD, Adadelta, Adagrad, Adamax
+#from tensorflow_addons.optimizers import AdamW
+from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.utils import to_categorical, plot_model
+from shapely.geometry import Point
+import time
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
@@ -48,79 +41,86 @@ from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, log_loss, c
 
 
 
+# import seaborn as sns
+# from sklearn.preprocessing import StandardScaler, MinMaxScaler
+# from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
+# from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, log_loss, confusion_matrix
+
+
+
 # from venues_deployed import getnearbyvenues
 # from getnearbyvenues import *
 # from mrcnn.infer import get_model,predict
-  
-# from PIL import Image, ImageDraw, ImageFont
-# import os
 
-# st.set_option('deprecation.showfileUploaderEncoding', False)
-# pd.set_option('display.max_colwidth', None)
+from PIL import Image, ImageDraw, ImageFont
+import os
 
-# @st.cache(persist=True, allow_output_mutation=True, suppress_st_warning=True)
-# def process(image, server_url: str):
+st.set_option('deprecation.showfileUploaderEncoding', False)
+pd.set_option('display.max_colwidth', None)
+
+@st.cache(persist=True, allow_output_mutation=True, suppress_st_warning=True)
+def process(image, server_url: str):
     
-#     m = MultipartEncoder(fields={'image':('filename', image, 'image/jpeg')})
-#     r = requests.post(server_url,data=m,headers={'Content-Type': m.content_type},timeout=8000)
-#     return r
-# @st.cache(persist=True, allow_output_mutation=True, suppress_st_warning=True)   
+    m = MultipartEncoder(fields={'image':('filename', image, 'image/jpeg')})
+    r = requests.post(server_url,data=m,headers={'Content-Type': m.content_type},timeout=8000)
+    return r
+@st.cache(persist=True, allow_output_mutation=True, suppress_st_warning=True)   
 
-# def file_selector(folder_path='.'):
-#     filenames = os.listdir(folder_path)
-#     selected_filename = st.selectbox('Select a file', filenames)
-#     return os.path.join(folder_path, selected_filename)
+def file_selector(folder_path='.'):
+    filenames = os.listdir(folder_path)
+    selected_filename = st.selectbox('Select a file', filenames)
+    return os.path.join(folder_path, selected_filename)
 
-# st.write('Trashout Shopping Product Classifier!')
-# INCEP_LABEL_PATH = "incep_cl/trained_labels.txt"
-# INCEP_MODEL_PATH = "incep_cl/trained_graph_4000.pb"
+st.write('Trashout Shopping Product Classifier!')
+INCEP_LABEL_PATH = "incep_cl/trained_labels.txt"
+INCEP_MODEL_PATH = "incep_cl/trained_graph_4000.pb"
 
 # MASKRCNN_MODEL_WEIGHTS = "mrcnn/weights/mask_rcnn_trashout_0250.h5"
 
 
-# option_model_first = st.sidebar.radio("Choose Option",options = ['Run product classifier','Regulations information'])
-option_model = st.sidebar.radio("Choose Option",options = ['Run product classifier','Regulations information'])
+option_model_first = st.sidebar.radio("Choose Option",options = ['Run product classifier','Regulations information'])
+# option_model = st.sidebar.radio("Choose Option",options = ['Run product classifier','Regulations information'])
 
 
 
-#Loads label file, strips off carriage return
-# label_lines = [line.rstrip() for line in tf.io.gfile.GFile(INCEP_LABEL_PATH)]
-# #Unpersists graph from file
-# with tf.compat.v1.gfile.FastGFile(INCEP_MODEL_PATH, "rb") as f:
-#     graph_def = tf.compat.v1.GraphDef()
-#     graph_def.ParseFromString(f.read())
-#     _ = tf.import_graph_def(graph_def, name="")
+Loads label file, strips off carriage return
+label_lines = [line.rstrip() for line in tf.io.gfile.GFile(INCEP_LABEL_PATH)]
+#Unpersists graph from file
+with tf.compat.v1.gfile.FastGFile(INCEP_MODEL_PATH, "rb") as f:
+    graph_def = tf.compat.v1.GraphDef()
+    graph_def.ParseFromString(f.read())
+    _ = tf.import_graph_def(graph_def, name="")
 
-# if option_model_first == 'Run product classifier':  
-#     load_image = uploaded_file = st.file_uploader("Load image", type=['jpg','png','jpeg'])
-#     if load_image is not None:
-#         image = Image.open(load_image)
-#         st.image(image, caption='Uploaded Image.', width = 160) 
-#         st.set_option('deprecation.showfileUploaderEncoding', False)
-#         option_model = st.selectbox("Choose Model" , options = ['Select Model','Inception','MaskRcnn'])
+if option_model_first == 'Run product classifier':  
+    load_image = uploaded_file = st.file_uploader("Load image", type=['jpg','png','jpeg'])
+    if load_image is not None:
+        image = Image.open(load_image)
+        st.image(image, caption='Uploaded Image.', width = 160) 
+        st.set_option('deprecation.showfileUploaderEncoding', False)
+        option_model = st.selectbox("Choose Model" , options = ['Select Model','Inception','MaskRcnn'])
 #         option_model = st.selectbox("Choose Model" , options = ['Select Model','Inception'])
    
-#         if (option_model == "Inception"):
-#             if st.button('Get Classification'):
-#                 image = Image.open(load_image)
-#                 load_image = image.convert('RGB')
-#                 load_image.save('im.jpg', format="JPEG")
+        if (option_model == "Inception"):
+            if st.button('Get Classification'):
+                image = Image.open(load_image)
+                load_image = image.convert('RGB')
+                load_image.save('im.jpg', format="JPEG")
     
-#                 image_data = tf.compat.v1.gfile.FastGFile('im.jpg', "rb").read()
-#                 with tf.compat.v1.Session() as sess:             
-#                     # Feed the image_data as input to the graph and get first prediction
-#                     st.spinner=("Inference running on the Image by model...")
-#                     softmax_tensor = sess.graph.get_tensor_by_name("final_result:0")
+                image_data = tf.compat.v1.gfile.FastGFile('im.jpg', "rb").read()
+                with tf.compat.v1.Session() as sess:             
+                    # Feed the image_data as input to the graph and get first prediction
+                    st.spinner=("Inference running on the Image by model...")
+                    softmax_tensor = sess.graph.get_tensor_by_name("final_result:0")
 
-#                     predictions = sess.run(softmax_tensor, {"DecodeJpeg/contents:0": image_data})
+                    predictions = sess.run(softmax_tensor, {"DecodeJpeg/contents:0": image_data})
 
-#                     # Sort to show labels of first prediction in order of confidence
-#                     top_k = predictions[0].argsort()[-len(predictions[0]) :][::-1]
-#                     answer = label_lines[top_k[0]]
-#                     print(answer)    
-#                 image_label = answer
-#                 #image_label = 'Felxible Plastic'
-#                 st.image([image], image_label, width=160)  # output dyptich
+                    # Sort to show labels of first prediction in order of confidence
+                    top_k = predictions[0].argsort()[-len(predictions[0]) :][::-1]
+                    answer = label_lines[top_k[0]]
+                    print(answer)    
+                image_label = answer
+                #image_label = 'Felxible Plastic'
+                st.image([image], image_label, width=160)  # output dyptich
 
 #         elif (option_model == "MaskRcnn"):
 #             if st.button('Get Classification'):
@@ -136,55 +136,55 @@ option_model = st.sidebar.radio("Choose Option",options = ['Run product classifi
 #                 st.image([image], image_label, width=160)  # output dyptich
 
 
-req_cols= ['City', 'Item Description', 'Disposal Category', 'Disposal Instructions']
-updated_df = pd.DataFrame(columns = req_cols)
-if option_model == 'Regulations information':
+# req_cols= ['City', 'Item Description', 'Disposal Category', 'Disposal Instructions']
+# updated_df = pd.DataFrame(columns = req_cols)
+# if option_model == 'Regulations information':
     
-    final_df = pd.DataFrame(columns =req_cols)
+#     final_df = pd.DataFrame(columns =req_cols)
     
-    cg_data = pd.read_csv("communityGuidelines.csv",   engine='python')
-    df = cg_data[req_cols]
-    cities = df.drop_duplicates(subset='City')
-    cities_list = cities['City'].tolist()
-    city= st.selectbox("Select city", cities_list)
-    image_label_df= df.drop_duplicates(subset='Disposal Category')
-    list_imagelabel = image_label_df['Disposal Category'].tolist()
-    select_dc = st.selectbox("Select object" , options = list_imagelabel)
-    inds = df[(df["City"]==city) &  (select_dc == df["Disposal Category"])]
-    if(inds.empty):
-        st.write(city, 'guideline for disposing ',select_dc, 'is not available')
-    else:
-        disposal_instr = inds.iloc[0]['Disposal Instructions']
-        if(len(disposal_instr)==0 ):
-            st.write(city, 'guideline for disposing ',select_dc, 'is not available')
-        else:
-            st.write(city, 'guideline for disposing ',select_dc,': ', str(disposal_instr))
+#     cg_data = pd.read_csv("communityGuidelines.csv",   engine='python')
+#     df = cg_data[req_cols]
+#     cities = df.drop_duplicates(subset='City')
+#     cities_list = cities['City'].tolist()
+#     city= st.selectbox("Select city", cities_list)
+#     image_label_df= df.drop_duplicates(subset='Disposal Category')
+#     list_imagelabel = image_label_df['Disposal Category'].tolist()
+#     select_dc = st.selectbox("Select object" , options = list_imagelabel)
+#     inds = df[(df["City"]==city) &  (select_dc == df["Disposal Category"])]
+#     if(inds.empty):
+#         st.write(city, 'guideline for disposing ',select_dc, 'is not available')
+#     else:
+#         disposal_instr = inds.iloc[0]['Disposal Instructions']
+#         if(len(disposal_instr)==0 ):
+#             st.write(city, 'guideline for disposing ',select_dc, 'is not available')
+#         else:
+#             st.write(city, 'guideline for disposing ',select_dc,': ', str(disposal_instr))
     
-    st.text("Can't find the disposal guidelines here and want to add it to our database ?")
-    st.text("Fill up the slots below and we shall add it in")
-    city_input = st.text_input("Enter the city for which you found the guideline")
+#     st.text("Can't find the disposal guidelines here and want to add it to our database ?")
+#     st.text("Fill up the slots below and we shall add it in")
+#     city_input = st.text_input("Enter the city for which you found the guideline")
     
-    final_df['City'] = pd.Series(city_input)
-    Item_Description = st.text_input("Provide an item description - example(glass bottle,plastic can,etc")
+#     final_df['City'] = pd.Series(city_input)
+#     Item_Description = st.text_input("Provide an item description - example(glass bottle,plastic can,etc")
     
-    final_df['Item Description'] = Item_Description
-    Disposal_Category = st.text_input("Provide the disposal category - example(organicwaste,plastic,textile,glass,etc)")
+#     final_df['Item Description'] = Item_Description
+#     Disposal_Category = st.text_input("Provide the disposal category - example(organicwaste,plastic,textile,glass,etc)")
     
-    final_df['Disposal Category']= Disposal_Category
-    Disposal_Instructions = st.text_input("Provide the disposal instructions")
+#     final_df['Disposal Category']= Disposal_Category
+#     Disposal_Instructions = st.text_input("Provide the disposal instructions")
     
-    final_df['Disposal Instructions']= Disposal_Instructions
+#     final_df['Disposal Instructions']= Disposal_Instructions
     
-    add_data = st.button("Add info")
-    if add_data :
-        final_df
-        df
+#     add_data = st.button("Add info")
+#     if add_data :
+#         final_df
+#         df
         
-        updated_df = updated_df.append(df)
-        updated_df = updated_df.append(final_df)
-        updated_df
-        updated_df.to_csv("communityGuidelines.csv",index =False)
-        final_df= final_df[0:0]      
+#         updated_df = updated_df.append(df)
+#         updated_df = updated_df.append(final_df)
+#         updated_df
+#         updated_df.to_csv("communityGuidelines.csv",index =False)
+#         final_df= final_df[0:0]      
         
     
     
