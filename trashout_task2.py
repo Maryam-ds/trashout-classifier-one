@@ -83,7 +83,7 @@ option_model_first = st.sidebar.radio("Choose Option",options = ['Run product cl
 
 
 
-Loads label file, strips off carriage return
+# Loads label file, strips off carriage return
 label_lines = [line.rstrip() for line in tf.io.gfile.GFile(INCEP_LABEL_PATH)]
 #Unpersists graph from file
 with tf.compat.v1.gfile.FastGFile(INCEP_MODEL_PATH, "rb") as f:
